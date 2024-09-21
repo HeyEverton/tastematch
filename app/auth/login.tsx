@@ -1,112 +1,133 @@
-import { Image, StyleSheet, Platform, TextInput, Button } from 'react-native';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Button,
+  StyleSheet,
+  StatusBar,
+  Image,
+} from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import { Tabs } from "expo-router";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import React, { useState } from 'react';
+export default function LoginScreen() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const navigation = useNavigation();
 
-export default function HomeScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  useEffect(() => {
+    console.log(navigation);
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   const handleLogin = () => {
-    // Aqui você pode adicionar a lógica de autenticação
-    console.log('Email:', email);
-    console.log('Password:', password);
+    console.log("Email: ", email);
+    console.log("Password: ", password);
+    navigation.setOptions({ headerShown: true });
+    navigation.navigate("explore");
   };
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.loginContainer}>
-        <ThemedText type="title">Login</ThemedText>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <Image
+        source={require("../../assets/images/logos/tastematch_logo__blue.png")}
+        style={styles.logo}
+      />
+      <Text style={styles.title}>TasteMatch</Text>
+      <Text style={styles.subtitle}>Faça login para continuar</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="E-mail"
+        placeholderTextColor="#888"
+        keyboardType="email-address"
+        value={email}
+        autoCorrect={false}
+        onChangeText={setEmail}
+      />
+      <View style={styles.passwordContainer}>
         <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
+          style={styles.passwordInput}
+          placeholder="Senha"
+          placeholderTextColor="#888"
+          secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
         />
-        <Button title="Login" onPress={handleLogin} />
-      </ThemedView>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Olá!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <TouchableOpacity
+          onPress={() => setShowPassword(!showPassword)}
+          style={styles.eyeIcon}
+        >
+          <Icon
+            name={showPassword ? "eye-off" : "eye"}
+            size={20}
+            color="#888"
+          />
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
+      <Button title="Entrar" onPress={handleLogin} color="#5A67D8" />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: "#1a1a1a",
   },
-  stepContainer: {
-    gap: 8,
+  title: {
+    fontSize: 24,
+    color: "#fff",
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-  loginContainer: {
-    padding: 20,
-    alignItems: 'center',
+  subtitle: {
+    fontSize: 16,
+    color: "#888",
+    marginBottom: 24,
   },
   input: {
-    width: '100%',
+    width: "100%",
     height: 40,
+    backgroundColor: "#333",
+    borderColor: "#444",
     borderWidth: 1,
-    borderColor: '#ccc',
-    paddingHorizontal: 10,
-    marginVertical: 10,
+    marginBottom: 12,
+    paddingHorizontal: 8,
+    color: "#fff",
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    backgroundColor: "#333",
+    borderColor: "#444",
+    borderWidth: 1,
+    marginBottom: 12,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 8,
+    color: "#fff",
+  },
+  eyeIcon: {
+    padding: 8,
+  },
+  forgotPassword: {
+    alignSelf: "flex-end",
+    color: "#888",
+    marginBottom: 24,
+  },
+  logo: {
+    width: 300,
+    height: 200,
   },
 });
